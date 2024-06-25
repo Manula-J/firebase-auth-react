@@ -1,0 +1,36 @@
+.navbar-container {
+  display: grid;
+  grid-template-columns: 30% 70%;
+  background-color: #9bfdc4;
+  height: 12vh;
+  width: 100vw;
+  margin: 0;
+  align-items: center;
+  text-align: center;
+}
+
+.nav-link-container {
+  text-align: right;
+  padding-right: 50px;
+}
+
+h1{
+  margin: 0;
+}
+
+.nav-link {
+  margin: 0 10px;
+  padding: 5px 20px;
+  border: 1px solid #000;
+  border-radius: 10px;
+  text-decoration: none;
+  background-color: #ebebeb;
+  color: #000;
+  transition: 0.3s;
+}
+
+.nav-link:hover {
+  color: #ebebeb;
+  background-color: #525252;
+}
+
