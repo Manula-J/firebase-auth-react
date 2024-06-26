@@ -1,11 +1,11 @@
-import { React, useState } from 'react';
+import React from 'react'
+import { useState } from 'react';
+import "./SignUp.css"
+import { doCreateUserWithEmailAndPassword, doSignInWithEmailAndPassword, doSignInWithGoole } from '../firebase/auth';
 import { useAuth } from '../contexts/authContext';
 import { Navigate } from 'react-router-dom';
-import { doSignInWithEmailAndPassword } from '../firebase/auth';
 
-
-export default function Login() {
-
+export default function SignUp() {
   const { userLoggedIn } = useAuth();
 
   const [email, setEmail] = useState('');
@@ -25,9 +25,16 @@ export default function Login() {
     e.preventDefault()
     if (!isSigningIn) {
       setIsSigningIn(true)
-      await doSignInWithEmailAndPassword(email, password)
+      await doCreateUserWithEmailAndPassword(email, password)
     }
   }
+
+  // const onGooleSignIn = (e) = {
+  //   if (!isSigningIn) {
+  //     setIsSigningIn(true)
+  //     doSignInWithGoole().catch
+  //   }
+  // }
 
   return(
     <div className='login-container'>
@@ -42,4 +49,4 @@ export default function Login() {
       </form>
     </div>
   );
-};
+}
