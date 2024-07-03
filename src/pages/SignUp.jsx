@@ -1,9 +1,11 @@
 import React from 'react'
 import { useState } from 'react';
 import "./SignUp.css"
-import { doCreateUserWithEmailAndPassword, doSignInWithEmailAndPassword, doSignInWithGoole } from '../firebase/auth';
+import { doCreateUserWithEmailAndPassword, doSignInWithGoole } from '../firebase/auth';
 import { useAuth } from '../contexts/authContext';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
+import { Alert } from '@mui/material';
+
 
 export default function SignUp() {
   const { userLoggedIn } = useAuth();
@@ -25,28 +27,46 @@ export default function SignUp() {
     e.preventDefault()
     if (!isSigningIn) {
       setIsSigningIn(true)
-      await doCreateUserWithEmailAndPassword(email, password)
+      try {
+        setErrorMessage("")
+        await doCreateUserWithEmailAndPassword(email, password)
+      } catch {
+        setErrorMessage("Failed to create an account")
+        setIsSigningIn(false)
+      }
     }
   }
 
-  // const onGooleSignIn = (e) = {
-  //   if (!isSigningIn) {
-  //     setIsSigningIn(true)
-  //     doSignInWithGoole().catch
-  //   }
-  // }
+  const onGoogleSignUp = async () => {
+    if (!isSigningIn) {
+      setIsSigningIn(true)
+      try {
+        await doSignInWithGoole().catch
+      } catch {
+        setErrorMessage("Failed to create an account")
+      }
+    }
+  }
 
   return(
     <div className='login-container'>
       {userLoggedIn && (<Navigate to={'/'} replace={true} />)}
-      <h2>Login</h2>
+      <h2>Sign Up</h2>
+      {errorMessage && <Alert style={{ backgroundColor: 'red', color: 'white' }}>{errorMessage}</Alert>}
       <form onSubmit={onSubmit}>
         <label>Email</label>
         <input type='text' value={email} onChange={handleEmail} />
         <label>Password</label>
         <input type='password' value={password} onChange={handlePassword} />
-        <input type='submit' className='btn-submit'/>
+        <button disabled={isSigningIn} type='submit' className='btn-submit'>Sign Up</button>
       </form>
+      <div className='btn-signup-with' onClick={onGoogleSignUp}>
+        {/* <img src='../../public/Images/google-icon.png' alt='Google Icon' className='icon'></img> */}
+        <span className='text'>Sign in with Google</span>
+      </div>
+      <div className='log-in-redirect-text'>
+      Already have an account? <Link to="/login" className='log-in-redirect-click'>Log In</Link>
+      </div>
     </div>
   );
 }

@@ -1,7 +1,9 @@
 import { React, useState } from 'react';
 import { useAuth } from '../contexts/authContext';
-import { Navigate } from 'react-router-dom';
-import { doSignInWithEmailAndPassword } from '../firebase/auth';
+import { Navigate, Link } from 'react-router-dom';
+import { doSignInWithEmailAndPassword, doSignInWithGoole } from '../firebase/auth';
+import { Alert } from '@mui/material';
+import "./Login.css";
 
 
 export default function Login() {
@@ -25,7 +27,24 @@ export default function Login() {
     e.preventDefault()
     if (!isSigningIn) {
       setIsSigningIn(true)
-      await doSignInWithEmailAndPassword(email, password)
+      setErrorMessage("")
+      try {
+        await doSignInWithEmailAndPassword(email, password)
+      } catch {
+        setErrorMessage("Failed to log in")
+      }
+    }
+  }
+
+  const onGoogleSignIn = async () => {
+    if (!isSigningIn) {
+      setIsSigningIn(true)
+      setErrorMessage("")
+      try {
+        await doSignInWithGoole().catch
+      } catch {
+        setErrorMessage("Failed to log in")
+      }
     }
   }
 
@@ -33,13 +52,22 @@ export default function Login() {
     <div className='login-container'>
       {userLoggedIn && (<Navigate to={'/'} replace={true} />)}
       <h2>Login</h2>
+      {errorMessage && <Alert style={{ backgroundColor: 'red', color: 'white' }}>{errorMessage}</Alert>}
       <form onSubmit={onSubmit}>
         <label>Email</label>
         <input type='text' value={email} onChange={handleEmail} />
         <label>Password</label>
         <input type='password' value={password} onChange={handlePassword} />
-        <input type='submit' className='btn-submit'/>
+        <div>
+          <Link to="/forgot-password">Forgot Password?</Link>
+        </div>
+        <input type='submit' className='btn-submit' value="Log in"/>
       </form>
+      <div className='btn-signup-with' onClick={onGoogleSignIn}>
+        {/* <img src='../../public/Images/google-icon.png' alt='Google Icon' className='icon'></img> */}
+        <span className='text'>Sign in with Google</span>
+      </div>
+      Need to create an account? <Link to="/signup" className='log-in-redirect-click'>Sign Up</Link>
     </div>
   );
 };
